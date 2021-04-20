@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', or 'ESNEXT'. */,
+    "module": "commonjs" /* Specify module code generation: 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "typeRoots": ["./node_modules/@types"],
+    "allowJs": false /* Allow javascript files to be compiled. */,                    /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */
+    "declaration": true ,
+    "outDir": "dist",
+    "strict": true /* Enable all strict type-checking options. */,
+    "baseUrl": ".", /* Base directory to resolve non-absolute module names. */
+    "inlineSourceMap": false /* Emit a single file with source maps instead of having a separate file. */,
+    "inlineSources": false /* Emit the source alongside the sourcemaps within a single file; requires '--inlineSourceMap' or '--sourceMap' to be set. */,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+  },
+  "include": [
+    "src/**/*",
+    "**/*/*.spec.ts"
+],
+  "exclude": ["node_modules", "dist"]
+}
