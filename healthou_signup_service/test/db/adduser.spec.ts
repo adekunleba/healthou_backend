@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import { Connection } from 'typeorm';
+import { UserEntityRepository } from "../../src/db/repositories/userrepository";
+import { Connection, getCustomRepository } from 'typeorm';
 import { runSeeder, tearDownDatabase, useRefreshDatabase, useSeeding } from "typeorm-seeding";
 import { CreateUserSeedA } from './seeds/create_user_seed';
 
@@ -17,16 +18,13 @@ describe("Run save data to Database ", function() {
     })
 
     it("Should retrieve new users from database", async () => {
-        expect(1 === 1);
+        let repo = getCustomRepository(UserEntityRepository);
+        let [_, count] = await repo.findAndCount();
+        console.log("Count of data found in db", count);
+        expect(count).to.equals(5);
     })
 
     after(async () => {
         await tearDownDatabase();
-        // try {
-        //     await  closeDatabase(incomingConnection);
-        //   } catch (e) {
-        //       console.log('Unable to close database connection', e);
-        //       throw e;
-        //   }
     })
 });
