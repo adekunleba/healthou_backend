@@ -1,17 +1,23 @@
 import config from "../../src/env";
-import { Connection, createConnection} from 'typeorm';
+import { Connection, createConnection, ConnectionOptions} from 'typeorm';
+
+
+
+export const connectionParams: ConnectionOptions = {
+    type: "mariadb",
+    host: config.typeormMaridb.host,
+    port: config.typeormMaridb.port,
+    username: config.typeormMaridb.username,
+    password: config.typeormMaridb.password,
+    database: config.typeormMaridb.test_database,
+    entities: ['test/db/test_entities/*.orm-entity.ts'],
+    migrations: ['test/db/test_migration/*.ts'],
+};
+
+
 
 export const createDatabaseConnection = async () : Promise<Connection> => {
-    const connection = await createConnection({
-        type: "mariadb",
-        host: config.typeormMaridb.host,
-        port: config.typeormMaridb.port,
-        username: config.typeormMaridb.username,
-        password: config.typeormMaridb.password,
-        database: config.typeormMaridb.test_database,
-        entities: ['test/db/test_entities/*.orm-entity.ts'],
-        migrations: ['test/db/test_migration/*.ts'],
-    })
+    const connection = await createConnection("default")
     return connection;
 }
 
