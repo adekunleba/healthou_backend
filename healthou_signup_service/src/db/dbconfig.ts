@@ -1,9 +1,8 @@
-import config from "../env"
-import { ConnectionOptions} from "typeorm"
+import config from '../env';
+import { ConnectionOptions } from 'typeorm';
 
-
-const maridbConfig :ConnectionOptions = {
-    type: "mariadb",
+const maridbConfig: ConnectionOptions = {
+    type: 'mariadb',
     host: config.typeormMaridb.host,
     port: config.typeormMaridb.port,
     username: config.typeormMaridb.username,
@@ -17,6 +16,5 @@ const maridbConfig :ConnectionOptions = {
         migrationsDir: `src/db/migrations`,
     },
 };
-
 
 export = maridbConfig;

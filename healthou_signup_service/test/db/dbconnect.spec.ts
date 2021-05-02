@@ -1,5 +1,5 @@
 
-import { closeDatabase, createDatabaseConnection } from './dbutils'
+import { closeDatabase, createDatabaseConnection, migrateDatabase } from './dbutils'
 import { expect } from 'chai';
 import { Connection } from 'typeorm';
 
@@ -9,6 +9,7 @@ describe("DB Initialization check ", function() {
     before(async function() {
         try {
             db_connect = await createDatabaseConnection();
+            await migrateDatabase(db_connect);
         } catch (e) {
             console.log('Initializaiton error', e);
             throw e;

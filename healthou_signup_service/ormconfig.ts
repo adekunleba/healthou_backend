@@ -1,4 +1,4 @@
-import {join} from "path";
+import { join } from "path";
 import * as DotEnv from 'dotenv';
 /**
  * According to this question on stackoverflow
@@ -17,14 +17,23 @@ const baseOptions = {
     port: 3306,
     username: String(process.env.MYSQL_USER),
     password: String(process.env.MYSQL_PASSWORD),
+    timezone: 'Z' // To force using same timezone - had issues with different timezone retrieved from DB
+    // logging: true,
   }
   
 const testConfig = Object.assign({
     name: "default",
     database: String(process.env.MYSQL_TEST_DATABASE),
     entities: [ join(__dirname, 'src/db/entity/*.orm-entity.ts')],
-    migrations: [join(__dirname, 'src/**/migrations/*.ts')],
-    factories: [join(__dirname, 'test/db/factories/*.ts')],
+    migrations: [join(__dirname, 'test/db/migrations/*.ts')],
+    migrationsTableName: 'migrations',
+    cli: {
+        migrationsDir: join(__dirname, `test/db/migrations`),
+    },
+    // dropSchema: true, // Be carefule of this, this drops your db on every run
+    synchronize: true,
+    // factories: [join(__dirname, 'test/db/factories/*{.ts,.js}')],
+    // seeds: [join(__dirname, 'test/db/seeds/*{.ts,.js}')]
 }, baseOptions);
 
 const devConfig = Object.assign({
@@ -62,5 +71,6 @@ const env = node_env === "production" ? database.production : node_env === "deve
                          node_env === "test" ? database.test : database.development;
 
 const dbConfig = env;
+console.log("Database in use ", dbConfig.database);
   
 module.exports = [ dbConfig ];
