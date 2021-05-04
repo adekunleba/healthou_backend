@@ -14,10 +14,16 @@ import config from '../../env';
 // Make a jwt authentication
 // Opaque tokens for authorization
 
-export function createToken(userName: string, token: TokenEntity) {
-    return JWT.sign({ userName, token }, config.credentials.jwt_secret, {
-        algorithm: 'RS256',
-        expiresIn: '10m',
-        subject: userName,
-    });
+export function createToken(userName: string, token: TokenEntity): string | undefined {
+    let signedToken: string | undefined = undefined;
+    try {
+        signedToken = JWT.sign({ userName, token }, config.credentials.jwt_secret, {
+            algorithm: 'RS256',
+            expiresIn: '10m',
+            subject: userName,
+        });
+    } catch (error) {
+        signedToken = undefined;
+    }
+    return signedToken;
 }

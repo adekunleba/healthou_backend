@@ -1,4 +1,5 @@
 import * as DotEnv from 'dotenv';
+import * as FS from "fs";
 
 DotEnv.config({
     // Need to change this
@@ -24,7 +25,7 @@ let config = {
         // autoLoadEntities: true,
     },
     credentials: {
-        jwt_secret: String(process.env.JWT_SECRET),
+        jwt_secret: FS.readFileSync('./jwtRS256.key', 'utf-8'),
     },
 };
 

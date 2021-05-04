@@ -4,6 +4,7 @@ import Plugin from './plugin';
 import Router from './router';
 import * as DotEnv from 'dotenv';
 import config from './env';
+import IRoute from './helper/route';
 
 export default class Server {
     private static _instance: Hapi.Server;
@@ -69,5 +70,35 @@ export default class Server {
 
     public static async inject(options: string | Hapi.ServerInjectOptions): Promise<Hapi.ServerInjectResponse> {
         return await Server._instance.inject(options);
+    }
+
+    /**
+     * Reference for test server.
+     * Might move this to test environment totally.
+     */
+    public static async testServer(routes: IRoute) {
+        try {
+            DotEnv.config({
+                // Need to change this
+                path: `${process.cwd()}/.env.dev`,
+            });
+            
+            Server._instance = new Hapi.Server({
+                port: config.app.port,
+                // port: config.app.port,
+            });
+           
+    
+            Server._instance.validator(require('@hapi/joi'));
+
+            // Register specific routes
+            routes.register(Server._instance);
+            await Server._instance.initialize();
+            return Server._instance;
+        } catch (error) {
+            Logger.info(`Server - There was something wrong: ${error}`);
+
+            throw error;
+        }
     }
 }

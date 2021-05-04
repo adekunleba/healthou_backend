@@ -32,21 +32,41 @@ export class AuthController {
         try {
             let authInput = request.payload as UserAuthentication;
             let user = await this.authService.validateUser(authInput);
-
-            //If uuser exists, pass a token authentication.
+            
+            //If user exists, pass a token authentication.
             if (user) {
                 // Create token
                 let token = await this.authService.createRefreshToken(user.email);
+                if (!token) {
+                    return toolkit.response(
+                        createResponse(request, {boom: Boom.internal('Failed to create refresh token')}),
+                    ).code(500);
+                }
+
                 // Create jwt signed
                 let jwtToken = createToken(user.email, token);
-                toolkit
-                    .response(createResponse(request, { value: { userEmail: user.email } }))
+                
+                
+                if (jwtToken == undefined) {
+                    return toolkit.response(
+                        createResponse(request, {boom: Boom.internal('Failed to create jwtToken, possible isses - check jwt token')}),
+                    ).code(500)
+                }
+                let createdResponse = createResponse(request, { value: { userEmail: user.email } })
+                return toolkit
+                    .response(createdResponse)
                     .code(200)
                     .header('Authorization', jwtToken);
             } else
-                toolkit.response(
+                return toolkit.response(
                     createResponse(request, { boom: Boom.unauthorized('Ensure email and password are correct') }),
-                );
-        } catch (error) {}
+                ).code(401);
+        } catch (error) {
+            return toolkit.response(
+                createResponse(request,  {
+                    boom: Boom.badImplementation(error),
+                })
+            ).code(500);
+        }
     };
 }

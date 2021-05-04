@@ -35,7 +35,7 @@ export class AuthService {
         tokenEntity.expiration = new Date(Date.now() + TOKEN_EXPIRY);
         tokenEntity.userId = id;
         tokenEntity.tokenType = 'jwt';
-        this.tokenRepository.save(tokenEntity);
+        let token = await this.tokenRepository.save(tokenEntity);
         return tokenEntity;
     }
 }
