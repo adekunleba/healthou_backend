@@ -6,6 +6,7 @@ import { UserEntityRepository } from "../../src/db/repositories/userrepository";
 import { createHash } from "../../src/helper/encryption";
 import { UserEntity } from "../../src/db/entity/user.orm-entity";
 import { userServiceMock } from "./user.mocks";
+import { EmailExists, UserNameExists } from "../../src/errors/user.error";
 
 describe("Run User service", function () {
     let sandbox: Sinon.SinonSandbox;
@@ -38,15 +39,64 @@ describe("Run User service", function () {
         expect(result?.username).to.equal(user.username);
     })
 
-    it("Should validate find user by email", async () => {
+    it("Should find user by email", async () => {
         const result = await userService.findUserByEmail(user.email, password)
         expect(result?.username).to.equal(user.username);
         expect(result?.email).to.equal(user.email);
     })
 
 
+    it("Should find user by username", async () => {
+        const result = await userService.findUserByUsername(user.username)
+        expect(result?.username).to.equal(user.username);
+        expect(result?.email).to.equal(user.email);
+    })
+
+    it("Should create new user", async () => {
+        let mocksUndefined = userServiceMock(user, true);
+        userService = mocksUndefined.userService;
+        userEntityRepo = mocksUndefined.userEntityRepo;
+        
+        const result = await userService.createNewUserBasic(user);
+        expect(result?.username).to.equal(user.username);
+        expect(result?.email).to.equal(user.email);
+    })
+
+    it("Should throw if user already exists", async () => {
+       await userService.createNewUserBasic(user).catch(error =>
+            expect(error).to.be.instanceOf(EmailExists)
+        )
+    })
+
+    it("Should throw Username Exists when username has been choosen", async () => {
+        let mocksUndefined = userServiceMock(user, true);
+        Sinon.restore();
+
+        let findByEmail = Sinon.stub(mocksUndefined.userEntityRepo, "findOneByEmail").returns(
+            new Promise((resolve, reject) => {
+                
+                resolve(undefined);
+                
+            })
+        );
+
+        let findByUsername = Sinon.stub(mocksUndefined.userEntityRepo, "findOneByUsername").returns(
+            new Promise((resolve, reject) => {
+                
+                resolve(user);
+                
+            })
+        );
+        userService = mocksUndefined.userService;
+        userEntityRepo = mocksUndefined.userEntityRepo;
+        await userService.createNewUserBasic(user).catch(error =>
+             expect(error).to.be.instanceOf(UserNameExists)
+         );
+     })
+
+
     it("Should be undefined on wrong password", async () => {
         const result = await userService.findUserByEmail(user.email, "some-unknown-passcode")
-        expect(result).to.equal(undefined);
+        expect(result).to.be.undefined;
     })
 })

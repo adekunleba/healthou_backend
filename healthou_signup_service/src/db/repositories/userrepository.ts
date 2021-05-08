@@ -15,4 +15,9 @@ export class UserEntityRepository extends Repository<UserEntity> {
             return false;
         }
     }
+
+    async findOneByUsername(username:string) {
+        let user: UserEntity |  undefined = await this.findOne({ where: {username: username}})
+        return user;
+    }
 }
