@@ -4,7 +4,7 @@ import { TypeormEntityBase } from './typeorm.entity.base';
 
 /**
  * Base entity for User:
- * Extends Typeorm entity base therefore has id, createdat and updated at
+ * Extends Typeorm entity base therefore has id, created at and updated at
  */
 @Entity('user')
 export class UserEntity extends TypeormEntityBase {
@@ -17,15 +17,11 @@ export class UserEntity extends TypeormEntityBase {
      */
     @Column({ unique: true })
     username!: string;
-
     /**
      * User email should be unique
      */
     @Column({ unique: true })
     email!: string;
-
-    @Column()
-    recoveryEmail!: string;
 
     @Column({ unique: true, type: 'longtext' })
     password!: string;
@@ -33,13 +29,20 @@ export class UserEntity extends TypeormEntityBase {
     @Column()
     passwordSalt!: string;
 
-    @Column()
+    @Column({type: 'boolean', default: false})
+    userValidated!: boolean;
+
+    @Column({ nullable: true})
+    recoveryEmail!: string;
+
+    /**TODO: Can auto detect country from IP address */
+    @Column({nullable: true})
     country!: string;
 
-    @Column()
+    @Column({nullable: true})
     firstName!: string;
 
-    @Column()
+    @Column({nullable: true})
     lastName!: string;
 
     @Column({ nullable: true })
@@ -53,7 +56,7 @@ export class UserEntity extends TypeormEntityBase {
     /**
      * Path to the address of the profile picture.
      */
-    @Column()
+    @Column({nullable: true})
     profilePicture!: string;
 
     @BeforeInsert()

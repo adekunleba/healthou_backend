@@ -24,6 +24,17 @@ describe("Run user repository to database",  function () {
         expect(result?.email).to.equals(user.email);
     })
 
+    it("Should retrieve user by username", async () => {
+        let result = await userRepository.findOneByUsername(user.username);
+        expect(result?.email).to.equals(user.email);
+        expect(result?.username).to.equal(user.username);
+    })
+
+    it("Should be undefined if username does not exist in db", async () => {
+        let result = await userRepository.findOneByUsername("no-username");
+        expect(result).to.equal(undefined);
+    })
+
     it("Should validate if user exists in db", async () => {
         let result = await userRepository.userExists(user.email);
         expect(result).to.equals(true);

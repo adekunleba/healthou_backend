@@ -2,6 +2,7 @@
  * Service contains extensions to the Repository
  */
 
+import { EmailExists, UserNameExists } from '../../errors/user.error';
 import { UserEntity } from '../../db/entity/user.orm-entity';
 import { UserEntityRepository } from '../../db/repositories/userrepository';
 import { comparePassword } from '../../helper/encryption';
@@ -36,5 +37,44 @@ export class UserService {
             return user;
         }
         return undefined;
+    }
+
+
+    /**
+     * Find a user given his or her username
+     * @param username: Username of user
+     */
+    async findUserByUsername(username:string): Promise<UserEntity | undefined> {
+
+        let user = await this.userRepository.findOneByUsername(username);
+
+        /**Only returns if all is fine */
+        if (user) {
+            return user;
+        }
+        return undefined;
+    }
+    
+
+    /**
+        Create a new basic user with just the username, email and password  
+     * @param user - UserEntity.
+     */
+    async createNewUserBasic(user: UserEntity) {
+        
+       
+        if ( await this.userRepository.findOneByEmail(user.email) !== undefined) {
+            //Email already exists
+            throw new EmailExists(user.email + " already exist, use a different email to signup");
+        }
+
+        if ( await this.userRepository.findOneByUsername(user.username) !== undefined) {
+            //Username already exists
+            throw new UserNameExists(user.username + " already exists, choose a different username");
+            
+        }
+         //Insert the user
+        const insertResult = await this.userRepository.save(user);
+        return insertResult;
     }
 }
