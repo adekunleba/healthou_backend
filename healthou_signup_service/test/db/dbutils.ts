@@ -1,5 +1,5 @@
 import config from "../../src/env";
-import { Connection, createConnection, ConnectionOptions} from 'typeorm';
+import { Connection, createConnection, ConnectionOptions, Migration} from 'typeorm';
 
 
 
@@ -21,16 +21,16 @@ export const createDatabaseConnection = async () : Promise<Connection> => {
     return connection;
 }
 
-export const synchronizeDatabase = async (connection: Connection) => {
+export const synchronizeDatabase = async (connection: Connection):Promise<void> => {
     await connection.dropDatabase();
     return connection.synchronize(true);
 };
 
-export const migrateDatabase = async (connection: Connection) => {
+export const migrateDatabase = async (connection: Connection):Promise<Migration []> => {
     await connection.dropDatabase();
     return connection.runMigrations();
 };
 
-export const closeDatabase = (connection: Connection) => {
+export const closeDatabase = (connection: Connection): Promise<void> => {
     return connection.close();
 };

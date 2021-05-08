@@ -2,6 +2,6 @@ import { Connection } from "typeorm";
 import { ConfigureOption } from "typeorm-seeding";
 import { createDatabaseConnection } from "../db/dbutils";
 
-export function prepareServer(options?: {migrate: boolean}) {
+export function prepareServer(options?: {migrate: boolean}) :Promise<Connection> {
     return createDatabaseConnection();
 }
