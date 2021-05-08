@@ -1,25 +1,25 @@
 export default {
-  swagger: {
-    options: {
-      info: {
-        title: 'API Documentation',
-        version: 'v1.0.0',
-        contact: {
-          name: 'John doe',
-          email: 'johndoe@johndoe.com',
+    swagger: {
+        options: {
+            info: {
+                title: 'API Documentation',
+                version: 'v1.0.0',
+                contact: {
+                    name: 'John doe',
+                    email: 'johndoe@johndoe.com',
+                },
+            },
+            grouping: 'tags',
+            sortEndpoints: 'ordered',
         },
-      },
-      grouping: 'tags',
-      sortEndpoints: 'ordered',
     },
-  },
-  status: {
-    options: {
-      path: '/status',
-      title: 'API Monitor',
-      routeConfig: {
-        auth: false,
-      },
+    status: {
+        options: {
+            path: '/status',
+            title: 'API Monitor',
+            routeConfig: {
+                auth: false,
+            },
+        },
     },
-  },
 };
