@@ -2,7 +2,7 @@
  * Service contains extensions to the Repository
  */
 
-import { EmailExists, UserNameExists } from '../../errors/user.error';
+import { EmailExists, UserNameExists, UserNotFoundError } from '../../errors/user.error';
 import { UserEntity } from '../../db/entity/user.orm-entity';
 import { UserEntityRepository } from '../../db/repositories/userrepository';
 import { comparePassword } from '../../helper/encryption';
@@ -76,5 +76,25 @@ export class UserService {
          //Insert the user
         const insertResult = await this.userRepository.save(user);
         return insertResult;
+    }
+
+
+    async updateUser(user:UserEntity): Promise<number | undefined> {
+        
+        const updatedUser = await this.userRepository.update(user.id, user);
+        return updatedUser.affected;
+    }
+
+    async findAllUsers():Promise<UserEntity []> {
+        return await this.userRepository.findAllUsers();
+    }
+
+    async deleteUser(username: string): Promise<number | undefined | null> {
+        if (await this.userRepository.findOneByUsername(username) === undefined) {
+            throw new UserNotFoundError(`${username} not found - unable to execute delete command`);
+        }
+
+        let deletedUser = await this.userRepository.delete({username: username});
+        return deletedUser.affected;
     }
 }

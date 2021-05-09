@@ -20,4 +20,9 @@ export class UserEntityRepository extends Repository<UserEntity> {
         let user: UserEntity |  undefined = await this.findOne({ where: {username: username}})
         return user;
     }
+
+    async findAllUsers(): Promise<UserEntity []> {
+        let allUser = await this.find();
+        return allUser;
+    }
 }
