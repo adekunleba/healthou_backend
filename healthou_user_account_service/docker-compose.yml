@@ -1,0 +1,46 @@
+version: "3"
+services:
+  mongo:
+    image: mongo:4.4.5-bionic
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - ./mongodb:/data/db
+    ports:
+      - "27017:27017"
+    env_file:
+      - ./.env.dev
+  mariadb:
+    image: mariadb:10.4
+    env_file:
+      - ./.env.dev
+    restart: always
+    volumes:
+      - ./mariadb:/var/lib/mysql
+      - ./mariadb_init:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+  web:
+    container_name: web-api
+    build: .
+    volumes:
+      - ./src:/usr/app/src
+      - ./test:/usr/app/test
+      - ./package.json:/usr/app/package.json
+      - ./tsconfig.json:/usr/app/tsconfig.json
+      - ./data:/usr/app/data
+    environment:
+      APP_PORT: 5000
+      APP_HOST: 0.0.0.0
+      PROJECT_DIR: /usr/app/
+      NODE_ENV: development
+      LOG_LEVEL: debug
+    env_file:
+      - ./.env.dev
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+      - mariadb
