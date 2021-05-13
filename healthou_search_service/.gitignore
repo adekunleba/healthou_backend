@@ -1,0 +1,14 @@
+# Build dir
+build
+
+# npm
+node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Test and coverage output
+coverage
+.nyc_output
