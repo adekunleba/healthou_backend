@@ -15,7 +15,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./healthou_user_service
+    working-directory: ./healthou_user_account_service
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
